@@ -15,7 +15,7 @@ const extractMusic = (musics) => {
     if (!fs.existsSync(mp3File)) {
       exec(
         `
-        youtubedr -d ${DOWNLOAD_FOLDER} -o ${title}.mp4 download -q 18 ${href} && cd ./${DOWNLOAD_FOLDER} && ffmpeg -i ${title}.mp4 -q:a 0 -map a ${title}.mp3 && rm -rf ${title}.mp4
+        youtubedr -d ${DOWNLOAD_FOLDER} -o '${title}.mp4' download -q 18 ${href} && cd ./${DOWNLOAD_FOLDER} && ffmpeg -i '${title}.mp4' -q:a 0 -map a '${title}.mp3' && rm -rf '${title}.mp4'
       `,
         (err, stdout, stderr) => {
           if (err) {

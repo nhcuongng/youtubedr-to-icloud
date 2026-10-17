@@ -10,15 +10,15 @@ const { extractMusic } = require("./downloader");
 
 async function getYoutubeMyMix() {
   const browser = await puppeteer.launch({
-    headless: true,
+    // headless: false,
   });
   const page = await browser.newPage();
 
   await page.goto(
-    "https://youtube.com/playlist?list=PLbq0bnR54OKvZl21kmBTNFbP39jb1k4oQ&si=alqEpwkCcz8rKDVQ",
+    "https://www.youtube.com/playlist?list=PLbq0bnR54OKvZl21kmBTNFbP39jb1k4oQ",
   );
 
-  var parentPath = "#contents.style-scope.ytd-playlist-video-list-renderer";
+  var parentPath = "#contents";
 
   await page.waitForSelector(parentPath);
 
@@ -42,24 +42,22 @@ async function getYoutubeMyMix() {
       return str;
     }
 
-    var parentPath = "#contents.style-scope.ytd-playlist-video-list-renderer";
+    var parentPath = "#contents";
 
     const parentEl = document.querySelector(parentPath);
 
     let elements = Array.from(
       parentEl.querySelectorAll(
-        `.style-scope.ytd-playlist-video-list-renderer`,
+        `.ytd-playlist-video-list-renderer`,
       ),
     );
 
-    const mixed = elements.reduce((acc, cur) => {
-      const elementVideo = cur.querySelector("#video-title");
-      console.log("🚀 ~ getYoutubeMyMix ~ elementVideo:", elementVideo);
-      const title = elementVideo?.getAttribute("title");
+    const mixed = Array.from(parentEl.childNodes).reduce((acc, elementVideo) => {
+      const title = elementVideo?.data?.metadata?.lockupMetadataViewModel?.title?.content;
       if (title) {
         acc.push({
-          href: `https://www.youtube.com${elementVideo?.getAttribute("href").split("&")[0]}`,
-          title: stringToSlug(elementVideo?.getAttribute("title") || ""),
+          href: `https://www.youtube.com/watch?v=${elementVideo?.data?.contentId}`,
+          title,
         });
       }
 
